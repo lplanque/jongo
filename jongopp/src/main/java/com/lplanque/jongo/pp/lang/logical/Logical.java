@@ -1,9 +1,7 @@
 package com.lplanque.jongo.pp.lang.logical;
 
-import com.lplanque.jongo.pp.lang.Query;
+import com.lplanque.jongo.pp.lang.NonEmpty;
 
-public interface Logical extends Query {
-	String op();
-	Logical compose(Query... query);
-	// TODO compact form !
+public interface Logical extends NonEmpty {
+
 }

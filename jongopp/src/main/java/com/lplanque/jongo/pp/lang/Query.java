@@ -1,5 +1,5 @@
 package com.lplanque.jongo.pp.lang;
 
-public interface Query extends Part {
+public interface Query extends Expression {
 
 }
