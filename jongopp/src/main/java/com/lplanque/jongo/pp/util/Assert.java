@@ -7,7 +7,7 @@ import com.lplanque.jongo.pp.lang.Operators;
 public final class Assert {
 
 	public static void assertSupported(String op) {
-		if(!Operators.isMember(op) || Operators.REGEX.equals(op)) {
+		if(!Operators.isMember(op) || Operators.REGEX.equals(op)) { // TODO Rework !
 			throw new RuntimeException(format("%s-operation is not supported", op));
 		}
 	}
