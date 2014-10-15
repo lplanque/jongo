@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.lplanque.jongo.pp.lang.NonEmpty;
+import com.lplanque.jongo.pp.lang.Operators;
 import com.lplanque.jongo.pp.lang.operation.Operation;
 
 public final class Logicals {
@@ -61,10 +62,10 @@ public final class Logicals {
 	// LOGICAL OPERATIONS
 	// ------------------
 
-	public static Logical not(final String field, final Operation op) { // TODO Check parameters ?
+	public static Logical not(final String field, final Operation op) {
 		
 		assertNotNull(field, op);
-		assertSupported(op.operator());
+		assertSupported(op.operator(), Operators.REGEX);
 		return new Logical() {
 			
 			@Override public String template() {
