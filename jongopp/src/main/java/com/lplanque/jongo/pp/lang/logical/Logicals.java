@@ -4,12 +4,11 @@ import static com.lplanque.jongo.pp.lang.Operators.AND;
 import static com.lplanque.jongo.pp.lang.Operators.NOR;
 import static com.lplanque.jongo.pp.lang.Operators.NOT;
 import static com.lplanque.jongo.pp.lang.Operators.OR;
-
 import static com.lplanque.jongo.pp.util.Assert.assertNotNull;
 import static com.lplanque.jongo.pp.util.Assert.assertSupported;
-
 import static java.lang.String.format;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,9 +21,9 @@ public final class Logicals {
 	// ------------
 	
 	private static Logical build(
-		final String op, final String field, final NonEmpty first, final NonEmpty sec, final NonEmpty... rem) {
+		final String op, final String field, final NonEmpty first, final NonEmpty sec, final NonEmpty... rems) {
 		
-		assertNotNull(field, first, sec, rem);
+		assertNotNull(field, first, sec, rems);
 		return new Logical() {
 			
 			@Override public String template() {
@@ -33,17 +32,24 @@ public final class Logicals {
 				builder.append(":{").append(op);
 				builder.append(":[").append(first.template());
 				builder.append(',').append(sec.template());
-				for(int i = 0; i < rem.length; i++) {
-					if(rem[i] != null) {
-						builder.append(",").append(rem[i].template());
+				for(int i = 0; i < rems.length; i++) {
+					if(rems[i] != null) {
+						builder.append(",").append(rems[i].template());
 					}
 				}
 				return builder.append("]}}").toString();
 			}
 			
 			@Override public List<Object> parameters() {
-				// TODO Auto-generated method stub
-				return null;
+				final ArrayList<Object> params = new ArrayList<>();
+				params.addAll(first.parameters());
+				params.addAll(sec.parameters());
+				for(NonEmpty rem: rems) {
+					if(rem != null) {
+						params.add(rem);
+					}
+				}
+				return Collections.unmodifiableList(params);
 			}
 
 			@Override public String operator() {
