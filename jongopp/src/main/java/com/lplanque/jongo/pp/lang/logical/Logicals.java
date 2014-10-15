@@ -24,11 +24,21 @@ public final class Logicals {
 	private static Logical build(
 		final String op, final String field, final NonEmpty first, final NonEmpty sec, final NonEmpty... rem) {
 		
+		assertNotNull(field, first, sec, rem);
 		return new Logical() {
 			
 			@Override public String template() {
-				// TODO Auto-generated method stub
-				return null;
+				final StringBuilder builder = new StringBuilder(32);
+				builder.append('{').append(field);
+				builder.append(":{").append(op);
+				builder.append(":[").append(first.template());
+				builder.append(',').append(sec.template());
+				for(int i = 0; i < rem.length; i++) {
+					if(rem[i] != null) {
+						builder.append(",").append(rem[i].template());
+					}
+				}
+				return builder.append("]}}").toString();
 			}
 			
 			@Override public List<Object> parameters() {
@@ -45,7 +55,7 @@ public final class Logicals {
 	// LOGICAL OPERATIONS
 	// ------------------
 
-	public static Logical not(final String field, final Operation op) { // TODO Check parameters !
+	public static Logical not(final String field, final Operation op) { // TODO Check parameters ?
 		
 		assertNotNull(field, op);
 		assertSupported(op.operator());

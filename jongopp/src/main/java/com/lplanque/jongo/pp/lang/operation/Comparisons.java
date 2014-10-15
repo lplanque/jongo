@@ -7,6 +7,9 @@ import static com.lplanque.jongo.pp.lang.Operators.LT;
 import static com.lplanque.jongo.pp.lang.Operators.LTE;
 import static com.lplanque.jongo.pp.lang.Operators.NE;
 import static com.lplanque.jongo.pp.lang.Operators.NIN;
+
+import static com.lplanque.jongo.pp.util.Assert.assertNotNull;
+
 import static java.lang.String.format;
 
 import java.util.ArrayList;
@@ -15,10 +18,12 @@ import java.util.List;
 
 public final class Comparisons {
 	
-	// COMPARISON QUERIES
-	// ------------------
+	// INNER METHODS
+	// -------------
 	
 	private static Comparison build(final String op, final String field, final Object value) {
+		
+		assertNotNull(field, value);
 		return new Comparison() {
 			
 			@Override public String template() {
@@ -36,25 +41,31 @@ public final class Comparisons {
 	}
 	
 	private static Comparison build(final String op, final String field, final Object left, final Object... rights) {
+		
+		assertNotNull(field, left, rights);
 		return new Comparison() {
 
 			@Override public String template() {
-				final StringBuilder builder = new StringBuilder("{%s:{%s:[#");		
-				if(rights != null) {
-					for(int i = 0; i < rights.length; i++) {
-						builder.append(",#");
-					}
+				final StringBuilder builder = new StringBuilder(32);
+				builder.append('{').append(field);
+				builder.append(":{").append(op);
+				builder.append(":[#");
+				for(int i = 0; i < rights.length; i++) {
+					builder.append(",#");
 				}
 				return builder.append("]}}").toString();
 			}
 
 			@Override public List<Object> parameters() {
+				
 				final int length = rights == null? 1: 1 + rights.length;
 				final ArrayList<Object> params = new ArrayList<>(length);
 				params.add(left);
+				
 				for(int i = 1; i < length; i++) {
 					params.add(rights[i - 1]);
 				}
+				
 				return Collections.unmodifiableList(params);
 			}
 			
@@ -64,7 +75,12 @@ public final class Comparisons {
 		};
 	}
 	
-	public static Comparison eq(final String field, final Object value) {
+	// COMPARISON QUERIES
+	// ------------------
+	
+	public static Comparison eq(final String field, final Object value) { // TODO Create a Match type ?
+		
+		assertNotNull(field, value);
 		return new Comparison() {
 			
 			@Override public String template() {
