@@ -4,8 +4,10 @@ import static com.lplanque.jongo.pp.lang.Operators.AND;
 import static com.lplanque.jongo.pp.lang.Operators.NOR;
 import static com.lplanque.jongo.pp.lang.Operators.NOT;
 import static com.lplanque.jongo.pp.lang.Operators.OR;
+
 import static com.lplanque.jongo.pp.util.Assert.assertNotNull;
 import static com.lplanque.jongo.pp.util.Assert.assertSupported;
+
 import static java.lang.String.format;
 
 import java.util.ArrayList;

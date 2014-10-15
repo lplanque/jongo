@@ -2,10 +2,11 @@ package com.lplanque.jongo.pp.lang;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
 import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import com.lplanque.jongo.pp.lang.operation.Comparisons;
 
 public final class Operators {
 	
@@ -50,6 +51,12 @@ public final class Operators {
 	// COMPARISON OPERATORS
 	//---------------------
 	
+	/**
+	 * Value is <code>$eq</code>. This is not an <i>explicit</i> Mongo operator
+	 * but it is required for typing {@link Comparison#} returned by {@link Comparisons#eq(String, Object)}
+	 * method.
+	 */
+	public static final String EQ  = "$eq";
 	public static final String GT  = "$gt";
 	public static final String GTE = "$gte";
 	public static final String IN  = "$in";

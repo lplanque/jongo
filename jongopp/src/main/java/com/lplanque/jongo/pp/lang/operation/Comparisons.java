@@ -1,5 +1,6 @@
 package com.lplanque.jongo.pp.lang.operation;
 
+import static com.lplanque.jongo.pp.lang.Operators.EQ;
 import static com.lplanque.jongo.pp.lang.Operators.GT;
 import static com.lplanque.jongo.pp.lang.Operators.GTE;
 import static com.lplanque.jongo.pp.lang.Operators.IN;
@@ -8,15 +9,51 @@ import static com.lplanque.jongo.pp.lang.Operators.LTE;
 import static com.lplanque.jongo.pp.lang.Operators.NE;
 import static com.lplanque.jongo.pp.lang.Operators.NIN;
 
-import static com.lplanque.jongo.pp.util.Assert.assertNotNull;
 
+import static com.lplanque.jongo.pp.util.Assert.assertNotNull;
 import static java.lang.String.format;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 public final class Comparisons {
+	
+	// INNER TYPE
+	// ----------
+	
+	public final static class Tuple {
+		
+		public final String field;
+		public final Object value;
+		
+		private Tuple(String field, Object value) {
+			this.field = field;
+			this.value = value;
+		}
+		
+		@Override public boolean equals(Object o) {
+		    if(this == o) return true;
+		    if(o == null || getClass() != o.getClass()) return false;
+		    final Tuple that = (Tuple)o;
+		    return Objects.equal(this.field, that.field) 
+		    	&& Objects.equal(this.value, that.value); 
+		}
+		
+		@Override public int hashCode() {
+		    return Objects.hashCode(field, value);
+		}
+		
+		@Override public String toString() {
+		    return MoreObjects.toStringHelper(this)
+		    	.add("field", field)
+		    	.add("value", value)
+		    	.toString();
+		}
+	}
 	
 	// INNER METHODS
 	// -------------
@@ -56,16 +93,13 @@ public final class Comparisons {
 				return builder.append("]}}").toString();
 			}
 
-			@Override public List<Object> parameters() {
-				
+			@Override public List<Object> parameters() {	
 				final int length = rights == null? 1: 1 + rights.length;
 				final ArrayList<Object> params = new ArrayList<>(length);
 				params.add(left);
-				
 				for(int i = 1; i < length; i++) {
 					params.add(rights[i - 1]);
 				}
-				
 				return Collections.unmodifiableList(params);
 			}
 			
@@ -78,23 +112,45 @@ public final class Comparisons {
 	// COMPARISON QUERIES
 	// ------------------
 	
-	public static Comparison eq(final String field, final Object value) { // TODO Create a Match type ?
-		
-		assertNotNull(field, value);
+	public static Tuple tuple(final String field, final Object value) {
+		return new Tuple(field, value);
+	}
+	
+	public static Comparison eq(final Tuple first, final Tuple... rems) {
+
+		assertNotNull(first, rems);
 		return new Comparison() {
 			
 			@Override public String template() {
-				return format("{%s:#}", field);
+				final StringBuilder builder = new StringBuilder();
+				builder.append('{').append(first.field).append(":#");
+				for(Tuple rem: rems) {
+					if(rem != null) {
+						builder.append(',').append(rem.field).append(":#");
+					}
+				}
+				return builder.append('}').toString();
 			}
 			
 			@Override public List<Object> parameters() {
-				return Collections.singletonList(value);
+				final ArrayList<Object> params = new ArrayList<>(1 + rems.length);
+				for(Tuple rem: rems) {
+					if(rem != null) {
+						params.add(rem.value);
+					}
+				}
+				return Collections.unmodifiableList(params);
 			}
 			
 			@Override public String operator() {
-				return null;
+				return EQ;
 			}
 		};
+		
+	}
+	
+	public static Comparison eq(final String field, final Object value) { // TODO Create a Match type ?
+		return eq(tuple(field, value));
 	}
 	
 	public static Comparison gt(final String field, final Object value) {
