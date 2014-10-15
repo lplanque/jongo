@@ -22,9 +22,11 @@ public final class Assert {
 	}
 	
 	public static void assertNotNull(Object... params) {
+		final RuntimeException re = new RuntimeException("parameter can not be null");
+		if(params == null) throw re;
 		for(Object param: params) {
 			if(param == null) {
-				throw new RuntimeException("parameter can not be null");
+				throw re;
 			}
 		}
 	}
