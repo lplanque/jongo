@@ -1,8 +1,8 @@
-package com.lplanque.jongo.pp.lang;
+package com.lplanque.jongo.pp.lang.query;
 
 import java.util.List;
 
 public interface Template {
-	String template();
+	String pattern();
 	List<Object> parameters();
 }

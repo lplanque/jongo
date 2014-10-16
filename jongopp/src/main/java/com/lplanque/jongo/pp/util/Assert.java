@@ -2,8 +2,12 @@ package com.lplanque.jongo.pp.util;
 
 import static java.lang.String.format;
 
-import com.lplanque.jongo.pp.lang.Operators;
+import com.lplanque.jongo.pp.lang.query.Operators;
 
+/**
+ * TODO Rework later...
+ * @author <a href="https://github.com/lplanque" target="_blank">Laurent Planque</a>
+ */
 public final class Assert {
 
 	public static void assertSupported(String op) {

@@ -1,4 +1,4 @@
-package com.lplanque.jongo.pp.lang;
+package com.lplanque.jongo.pp.lang.query;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,12 +13,16 @@ public final class Queries {
 	 */
 	public static final Query EMPTY = new Query() {
 		
-		@Override public String template() {
+		@Override public String pattern() {
 			return "{}";
 		}
 		
 		@Override public List<Object> parameters() {
 			return Collections.emptyList();
+		}
+
+		@Override public int order() {
+			return 0;
 		}
 	};
 	
@@ -27,7 +31,7 @@ public final class Queries {
 	 * class. This method has the same behavior as getting {@link #EMPTY}.
 	 * @return The empty query.
 	 */
-	public static Query empty() {
+	public static Template empty() {
 		return EMPTY;
 	}
 }

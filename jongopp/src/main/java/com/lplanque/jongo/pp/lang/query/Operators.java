@@ -1,12 +1,10 @@
-package com.lplanque.jongo.pp.lang;
+package com.lplanque.jongo.pp.lang.query;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import com.lplanque.jongo.pp.lang.operation.Comparisons;
 
 public final class Operators {
 	
@@ -51,12 +49,6 @@ public final class Operators {
 	// COMPARISON OPERATORS
 	//---------------------
 	
-	/**
-	 * Value is <code>$eq</code>. This is not an <i>explicit</i> Mongo operator
-	 * but it is required for typing {@link Comparison#} returned by {@link Comparisons#eq(String, Object)}
-	 * method.
-	 */
-	public static final String EQ  = "$eq";
 	public static final String GT  = "$gt";
 	public static final String GTE = "$gte";
 	public static final String IN  = "$in";
@@ -111,7 +103,7 @@ public final class Operators {
 	 * @return <code>true</code> if and only if the given parameter is a valid operator.
 	 */
 	public static boolean isMember(final String maybe) {
-		return OPERATORS.contains(maybe);
+		return maybe != null && OPERATORS.contains(maybe);
 	}
 	
 	/**
