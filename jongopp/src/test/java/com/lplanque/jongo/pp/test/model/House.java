@@ -13,6 +13,11 @@ public class House {
 	public String name;
 	public List<Hero> heroes;
 	public String info;
+	public final int n = 1;
+	
+	public House() {
+		
+	}
 	
 	public House(String name, List<Hero> heroes) {
 		this.name = name;

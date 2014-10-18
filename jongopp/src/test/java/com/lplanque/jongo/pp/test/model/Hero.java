@@ -13,6 +13,10 @@ public class Hero {
 	public int strength;
 	public Psycho psycho;
 	
+	public Hero() {
+		
+	}
+	
 	public Hero(String name, int strength, Psycho psycho) {
 		this.name = name;
 		this.strength = strength;

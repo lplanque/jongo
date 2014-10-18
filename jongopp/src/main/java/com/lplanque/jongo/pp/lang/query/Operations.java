@@ -1,5 +1,9 @@
 package com.lplanque.jongo.pp.lang.query;
 
+import static com.lplanque.jongo.pp.lang.Templates.array;
+import static com.lplanque.jongo.pp.lang.Templates.brace;
+import static com.lplanque.jongo.pp.lang.Templates.sharps;
+import static com.lplanque.jongo.pp.lang.Templates.tuple;
 import static com.lplanque.jongo.pp.lang.query.Operators.GT;
 import static com.lplanque.jongo.pp.lang.query.Operators.GTE;
 import static com.lplanque.jongo.pp.lang.query.Operators.IN;
@@ -9,45 +13,35 @@ import static com.lplanque.jongo.pp.lang.query.Operators.NE;
 import static com.lplanque.jongo.pp.lang.query.Operators.NIN;
 import static com.lplanque.jongo.pp.lang.query.Operators.NOT;
 
-import static com.lplanque.jongo.pp.lang.query.Templates.array;
-import static com.lplanque.jongo.pp.lang.query.Templates.brace;
-import static com.lplanque.jongo.pp.lang.query.Templates.sharps;
-import static com.lplanque.jongo.pp.lang.query.Templates.tuple;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public final class Operations {
 	
 	// BUILDER METHODS
 	// ---------------
 
-	private static Operation build(final String operator, final Object value) {
+	private static Operation nary(final String operator, final int n) {
 		
+		final int max = Math.max(0, n);
 		return new _Operation(operator) {
 			
-			@Override public String pattern() {
-				return tuple(operator);
+			@Override public String toString() {
+				return tuple(operator, array(sharps(max)));
 			}
 			
-			@Override public List<Object> parameters() {
-				return Collections.singletonList(value);
+			@Override public int arity() {
+				return max;
 			}
 		};
 	}
 	
-	private static Operation build(final String operator, final Object... values) {
-		
-		final int length = values == null? 0: values.length;
+	private static Operation single(final String operator) {
 		return new _Operation(operator) {
 			
-			@Override public String pattern() {
-				return tuple(operator, array(sharps(length)));
+			@Override public String toString() {
+				return tuple(operator);
 			}
 			
-			@Override public List<Object> parameters() {
-				return Collections.unmodifiableList(Arrays.asList(values));
+			@Override public int arity() {
+				return 1;
 			}
 		};
 	}
@@ -56,12 +50,12 @@ public final class Operations {
 		
 		return new _Operation(NOT) {
 			
-			@Override public String pattern() {
-				return tuple(op, brace(operation.pattern()));
+			@Override public String toString() {
+				return tuple(op, brace(operation));
 			}
 			
-			@Override public List<Object> parameters() {
-				return operation.parameters();
+			@Override public int arity() {
+				return operation.arity();
 			}
 		};
 	}
@@ -69,34 +63,42 @@ public final class Operations {
 	// COMPARISON OPERATIONS
 	// ---------------------
 	
-	public static Operation gt(final Object value) {
-		return build(GT, value);
+	public static Operation gt() {
+		return single(GT);
 	}
 	
-	public static Operation gte(final Object value) {
-		return build(GTE, value);
+	public static Operation gte() {
+		return single(GTE);
 	}
 	
-	public static Operation in(final Object... values) {
-		return build(IN, values);
+	public static Operation in() {
+		return nary(IN, 1);
 	}
 	
-	public static Operation lt(final Object value) {
-		return build(LT, value);
+	public static Operation in(final int n) {
+		return nary(IN, n);
 	}
 	
-	public static Operation lte(final Object value) {
-		return build(LTE, value);
+	public static Operation lt() {
+		return single(LT);
 	}
 	
-	public static Operation ne(final Object value) {
-		return build(NE, value);
+	public static Operation lte() {
+		return single(LTE);
 	}
 	
-	public static Operation nin(final Object... values) {
-		return build(NIN, values);
+	public static Operation ne() {
+		return single(NE);
 	}
 	
+	public static Operation nin() {
+		return nary(NIN, 1);
+	}
+	
+	public static Operation nin(final int n) {
+		return nary(NIN, n);
+	}
+
 	// INNER CLASS
 	// -----------
 	

@@ -1,7 +1,6 @@
 package com.lplanque.jongo.pp.lang.query;
 
-import java.util.Collections;
-import java.util.List;
+import com.lplanque.jongo.pp.lang.Template;
 
 public final class Queries {
 	
@@ -13,12 +12,12 @@ public final class Queries {
 	 */
 	public static final Query EMPTY = new Query() {
 		
-		@Override public String pattern() {
+		@Override public String toString() {
 			return "{}";
 		}
 		
-		@Override public List<Object> parameters() {
-			return Collections.emptyList();
+		@Override public int arity() {
+			return 0;
 		}
 
 		@Override public int order() {

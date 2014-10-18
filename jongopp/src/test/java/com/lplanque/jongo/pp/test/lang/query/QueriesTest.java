@@ -9,7 +9,7 @@ public final class QueriesTest {
 
 	@Test public void emptyTest(/* empty query correctness */) {
 		assertEquals(EMPTY, empty());
-		assertEquals("{}", EMPTY.pattern());
-		assertTrue(EMPTY.parameters().isEmpty());
+		assertEquals("{}", EMPTY.toString());
+		assertEquals(0, EMPTY.arity());
 	}
 }

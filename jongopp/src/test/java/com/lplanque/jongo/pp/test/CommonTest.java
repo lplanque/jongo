@@ -7,20 +7,24 @@ import static com.lplanque.jongo.pp.test.model.Hero.Psycho.NICE;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jongo.Find;
 import org.jongo.Jongo;
 import org.jongo.Mapper;
 import org.jongo.MongoCollection;
+import org.jongo.MongoCursor;
 import org.jongo.marshall.jackson.JacksonMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
+
 import com.github.fakemongo.junit.FongoRule;
+
 import com.lplanque.jongo.pp.test.model.Hero;
 import com.lplanque.jongo.pp.test.model.House;
 
-public abstract class CommonTest {
+public class CommonTest {
 
 	protected static final List<House> HOUSES = new ArrayList<>();
 	
@@ -90,6 +94,11 @@ public abstract class CommonTest {
 		}
 	}
 	
-	@Test
-	public abstract void go();
+	@Test public void go() {
+		Find find = docs.find("{n: {$in: [#, #, #]}}", 1, 2, 3);
+		MongoCursor<House> cursor = find.as(House.class);
+		while(cursor.hasNext()) {
+			System.out.println(cursor.next());
+		}
+	}
 }

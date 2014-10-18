@@ -1,60 +1,40 @@
-package com.lplanque.jongo.pp.test.lang.query;
+package com.lplanque.jongo.pp.test.lang;
 
-import static com.lplanque.jongo.pp.lang.query.Templates.*;
+import static com.lplanque.jongo.pp.lang.Templates.*;
 import static java.lang.String.*;
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.Test;
 
-import com.lplanque.jongo.pp.lang.query.Template;
+import com.lplanque.jongo.pp.lang.Template;
 
 public class TemplatesTest {
 	
-	private final Template first = new Template() {
-		
-		@Override public String pattern() {
-			return "(0)";
-		}
-		
-		@Override public List<Object> parameters() {
-			return Collections.emptyList();
-		}
-	};
+	private final Template first = template(0);
 
 	private final Template[] remainder = new Template[] {
-		
-		new Template() {
-			
-			@Override public String pattern() {
-				return "(1)";
-			}
-				
-			@Override public List<Object> parameters() {
-				return Collections.singletonList((Object)1);
-			}
-		},
-		
-		new Template() {
-			
-			@Override public String pattern() {
-				return "(2)";
-			}
-			
-			@Override public List<Object> parameters() {
-				return Arrays.asList((Object)2, 3);
-			}
-		}
+		template(1),
+		template(2)
 	};
 	
 	private final Object[] patterns = {
-		first.pattern(),
-		remainder[0].pattern(),
-		remainder[1].pattern()
+		first.toString(),
+		remainder[0].toString(),
+		remainder[1].toString()
 	};
+	
+	private Template template(final int n) {	
+		return new Template() {
+			
+			@Override public String toString() {
+				return format("(%s)", n);
+			}
+			
+			@Override public int arity() {
+				return n;
+			}
+		};
+	}
 
 	@Test public void sharpsTest(/* generation of #-sequence */) {
 		assertEquals("", sharps(0));
