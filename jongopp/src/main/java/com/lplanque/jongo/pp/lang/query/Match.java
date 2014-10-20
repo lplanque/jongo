@@ -1,13 +1,16 @@
 package com.lplanque.jongo.pp.lang.query;
 
-import com.lplanque.jongo.pp.lang.GenericTemplate;
+import static com.lplanque.jongo.pp.lang.Templates.seq;
+import static com.lplanque.jongo.pp.lang.Templates.tuple;
+
+import com.lplanque.jongo.pp.lang.Container;
 import com.lplanque.jongo.pp.lang.Template;
 
-public final class Match extends GenericTemplate {
+public final class Match extends Container {
 	
 	private final String field;
 	
-	private Match(final String field, Template template) {
+	private Match(final String field, final Template template) {
 		super(template);
 		this.field = field;
 	}

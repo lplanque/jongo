@@ -4,45 +4,125 @@ import static java.lang.String.format;
 
 public final class Templates {
 	
-	// PATTERN BUILDERS
-	// ----------------
-	
-	public static String seq(Template first, Template... rem) {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(first); 
-		if(rem != null) {
-			for(Object o: rem) {
-				builder.append(',').append(o);
-			}
+	public static final Template EMPTY = new Template() {
+		
+		@Override public String toString() {
+			return "";
 		}
-		return builder.toString();
-	}
-	
-	public static String sharps(int n) {
-		final StringBuilder builder = new StringBuilder();
-		if(n > 0) {
-			builder.append('#');
-			for(int i = 1; i < n; i++) {
-				builder.append(',').append('#');
-			}
+		
+		@Override public int arity() {
+			return 0;
 		}
-		return builder.toString();
+	};
+	
+	// BUILDER METHODS
+	// ---------------
+	
+	public static Template empty() {
+		return EMPTY;
 	}
 	
-	public static String brace(Object o) {
-		return format("{%s}", o);
+	public static Template emptyIfNull(final Template template) {
+		return template == null? EMPTY: template;
 	}
 	
-	public static String array(Object o) {
-		return format("[%s]", o);
+	public static Template array(Template template) {
+		
+		final Template effective = emptyIfNull(template);
+		return new Template() {
+			
+			@Override public String toString() {
+				return format("[%s]", effective);
+			}
+			
+			@Override public int arity() {
+				return effective.arity();
+			}
+		};
 	}
 	
-	public static String tuple(Object left) {
-		return format("%s:#", left);
+	public static Template brace(final Template template) {
+		
+		final Template effective = emptyIfNull(template);
+		return new Template() {
+			
+			@Override public String toString() {
+				return format("{%s}", effective);
+			}
+			
+			@Override public int arity() {
+				return effective.arity();
+			}
+		};
 	}
 	
-	public static String tuple(Object left, Object right) {
-		return format("%s:%s", left, right);
+	public static Template sharps(final int n) {
+		
+		return n <= 0? EMPTY: new Template() {
+			
+			@Override public String toString() {
+				final StringBuilder builder = new StringBuilder();
+				builder.append('#');
+				for(int i = 1; i < n; i++) {
+					builder.append(',').append('#');
+				}
+				return builder.toString();
+			}
+			
+			@Override public int arity() {
+				return n;
+			}
+		};
+	}
+	
+	public static Template seq(final Template first, final Template... rem) {
+		
+		return first == null || rem == null? EMPTY: new Template() {
+			
+			@Override public String toString() {
+				final StringBuilder builder = new StringBuilder();
+				builder.append(first); 
+				if(rem != null) {
+					for(Object o: rem) {
+						builder.append(',').append(o);
+					}
+				}
+				return builder.toString();				
+			}
+			
+			@Override public int arity() {
+				return arities(first, rem);
+			}
+		};
+	}
+	
+	public static Template tuple(final Object left) {
+
+		return new Template() {
+			
+			@Override public String toString() {
+				return format("%s:#", left);
+			}
+			
+			@Override public int arity() {
+				return 1;
+			}
+		};
+	}
+	
+	public static Template tuple(final Object left, final Template right) {
+		
+		final Template effective = emptyIfNull(right);
+		return new Template() {
+			
+			@Override public String toString() {
+				return format("%s:%s", left, effective);
+			}
+			
+			@Override public int arity() {
+				return effective.arity();
+			}
+		};
 	}
 	
 	// ARITY BUILDER

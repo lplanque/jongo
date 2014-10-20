@@ -20,46 +20,74 @@ public class TemplatesTest {
 	private final Object[] patterns = {
 		first.toString(),
 		remainder[0].toString(),
-		remainder[1].toString()
+		remainder[1].toString(),
 	};
 	
-	private Template template(final int n) {	
+	public final int[] arities = {
+		first.arity(),
+		remainder[0].arity(),
+		remainder[1].arity()
+	};
+	
+	private Template template(final int arity) {	
+		return template(format("(%s)", arity), arity);
+	}
+	
+	private Template template(final String pattern, final int arity) {
 		return new Template() {
 			
 			@Override public String toString() {
-				return format("(%s)", n);
+				return pattern;
 			}
 			
 			@Override public int arity() {
-				return n;
+				return arity;
 			}
-		};
+		};		
+	}
+	
+	private void assertSame(Template expected, Template actual) {
+		assertEquals(expected.toString(), actual.toString());
+		assertEquals(expected.arity(), actual.arity());
 	}
 
 	@Test public void sharpsTest(/* generation of #-sequence */) {
-		assertEquals("", sharps(0));
-		assertEquals("#", sharps(1));
-		assertEquals("#,#", sharps(2));
+		
+		final Template[] expected = new Template[10];
+		
+		expected[0] = empty();
+		expected[1] = template("#", 1);
+		
+		for(int i = 2; i < expected.length; i++) {
+			final Template pred = expected[i - 1];
+			expected[i] = template(format("%s,#", pred), pred.arity() + 1);
+		}
+		
+		for(int i = 0; i < expected.length; i++) {
+			assertSame(expected[i], sharps(i));
+		}
 	}
 	
 	@Test public void seqTest(/* sequence of templates */) {
-		assertEquals(patterns[0], seq(first));
-		assertEquals(format("%s,%s,%s", patterns), seq(first, remainder));
+		assertSame(first, seq(first));
+		final Template expected = template(
+			format("%s,%s,%s", patterns), arities(first, remainder));
+		assertSame(expected, seq(first, remainder));
 	}
 	
 	@Test public void braceTest(/* {}-operation */) {
-		assertEquals("{}", brace(""));
-		assertEquals("{(0)}", brace(first));
+		assertSame(template("{}", 0), brace(empty()));
+		assertSame(template("{(1)}", 1), brace(remainder[0]));
 	}
 	
 	@Test public void arrayTest(/* []-operation */) {
-		assertEquals("[]", array(""));
-		assertEquals("[(0)]", array(first));
+		assertSame(template("[]", 0),array(empty()));
+		assertSame(template("[(1)]", 1), array(remainder[0]));
 	}
 	
 	@Test public void tupleTest(/* x,y -> "x:y" */) {
-		assertEquals("field:#", tuple("field"));
-		assertEquals("field:value", tuple("field", "value"));
-		assertEquals("field:(0)", tuple("field", first));
+		assertSame(template("field:#", 1), tuple("field"));
+		final Template expected = template("field:" + first.toString(), first.arity());
+		assertSame(expected, tuple("field", first));
 	}
 }

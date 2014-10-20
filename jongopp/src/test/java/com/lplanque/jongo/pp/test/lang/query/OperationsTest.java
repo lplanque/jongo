@@ -1,6 +1,6 @@
 package com.lplanque.jongo.pp.test.lang.query;
 
-import static com.lplanque.jongo.pp.lang.query.Operations.*;
+import static com.lplanque.jongo.pp.lang.query.Operation.*;
 import static com.lplanque.jongo.pp.lang.query.Operators.*;
 import static org.junit.Assert.*;
 import static java.lang.String.*;
